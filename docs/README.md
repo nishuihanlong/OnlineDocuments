@@ -72,6 +72,24 @@ pnpm dev:admin
 
 功能清单中其余模块（部门/岗位/字典、定时任务、文档审核/导出/预览/转换、在线用户等）已在分层架构与数据模型中预留扩展位置，尚未实现具体接口。
 
+## 界面预览
+
+### 文档管理
+
+文档列表支持关键词检索、回收站切换，以及新建空白文档、上传文件、编辑、分享、版本历史与删除等操作；操作栏按细粒度权限动态显隐。
+
+![文档列表](screenshot/document-list.png)
+
+![文档列表（多版本文档）](screenshot/document-list-multi.png)
+
+![文档列表与完整导航](screenshot/document-list-nav.png)
+
+### 参数配置
+
+`watermark.enabled` 水印开关在参数管理页以开关控件呈现，切换即时生效。
+
+![水印开关配置](screenshot/config-watermark.png)
+
 ## 验证命令
 
 ```bash
