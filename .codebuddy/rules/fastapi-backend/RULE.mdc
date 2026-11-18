@@ -1,0 +1,53 @@
+---
+description: FastAPI 后端开发规范
+globs: **/*.py
+alwaysApply: false
+---
+
+## FastAPI 后端规则
+&zwnj;**文件路径**&zwnj;: `.codebuddy/rules/fastapi-backend/RULE.mdc`
+&zwnj;**作用**&zwnj;: 仅匹配 Python 文件，约束 FastAPI 分层架构与编码规范。
+
+---
+
+# FastAPI 后端开发规范
+
+## 1. 技术栈约束
+- &zwnj;**语言**&zwnj;: Python 3.12，虚拟环境目录：`.venv`
+- &zwnj;**框架**&zwnj;: FastAPI
+- &zwnj;**数据校验**&zwnj;: Pydantic V2
+- &zwnj;**异步**&zwnj;: 优先使用 `async def` 处理 I/O 密集型任务
+- &zwnj;**ORM**&zwnj;: SQLAlchemy (Async)
+- &zwnj;**数据库**&zwnj;：达梦8
+- &zwnj;**缓存**&zwnj;：Redis
+- &zwnj;**消息队列**&zwnj;：RabbitMQ  
+- &zwnj;**文档存储**&zwnj;：Rustfs
+
+## 2. 项目分层架构
+严禁在路由层编写业务逻辑。必须遵循以下分层：
+- &zwnj;**routers/**&zwnj;: 仅负责接收请求、参数校验、调用 Service 层、返回响应。
+- &zwnj;**services/**&zwnj;: 包含核心业务逻辑、事务控制。
+- &zwnj;**models/**&zwnj;: 数据库模型定义 (SQLAlchemy)。
+- &zwnj;**schemas/**&zwnj;: Pydantic 模型定义 (Request/Response DTOs)。
+- &zwnj;**repositories/**&zwnj;: 数据库 CRUD 操作封装。
+
+## 3. 编码规范
+- &zwnj;**Pydantic 模型**&zwnj;: 
+  - 所有接口入参和出参必须定义明确的 Pydantic BaseModel。
+  - 禁止直接使用 `dict` 或 `BaseModel` 泛型作为响应类型。
+- &zwnj;**依赖注入**&zwnj;: 使用 `Depends` 进行数据库会话管理、用户认证等。
+- &zwnj;**异常处理**&zwnj;: 使用 `HTTPException` 抛出标准 HTTP 错误，或在中间件统一捕获业务异常并转换为标准响应结构。
+- &zwnj;**类型提示**&zwnj;: 所有函数参数和返回值必须有明确的 Type Hints。
+
+## 4. 示例
+```python
+# 正确示例
+@router.post("/users", response_model=UserOut)
+async def create_user(user_in: UserIn, service: UserService = Depends()):
+    return await service.create(user_in)
+
+# 错误示例：在 router 中直接操作数据库
+@router.post("/users")
+async def create_user_bad(user_in: dict, db: Session = Depends(get_db)):
+    db.add(User(**user_in)) # 禁止
+    db.commit()

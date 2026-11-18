@@ -1,0 +1,75 @@
+---
+description: Vue3 前端开发规范
+globs: **/*.{vue,ts,js}
+alwaysApply: true
+---
+
+## Vue3 前端规则
+&zwnj;**文件路径**&zwnj;: `.codebuddy/rules/vue3-frontend/RULE.mdc`  
+&zwnj;**作用**&zwnj;: 仅匹配 Vue/TS/JS 文件，约束 Vue3 Composition API 开发规范。  
+
+---
+
+# Vue3 前端开发规范
+
+## 1. 技术栈约束
+- &zwnj;**框架**&zwnj;: Vue 3.5+
+- &zwnj;**脚本**&zwnj;: `<script setup lang="ts">` (强制使用 Composition API + TypeScript)
+- &zwnj;**状态管理**&zwnj;: Pinia (禁止使用 Vuex)
+- &zwnj;**路由**&zwnj;: Vue Router 5
+- &zwnj;**UI 库**&zwnj;: Element Plus
+- &zwnj;**HTTP 请求**&zwnj;: Axios
+- &zwnj;**使用脚手架**&zwnj;: [ElementAdminV3](https://github.com/kailong321200875/vue-element-plus-admin)
+- &zwnj;**引入js库**&zwnj;：https://github.com/ChristopherVR/ooxml
+采用该库底层的ooxml-core库做文件解析、编辑、验证和写入操作，ooxml-ui是所有UI相关的DOM渲染能力都由它统一提供，核心的业务逻辑完全不侵入这个UI层，核心库也不会主动导入它。ooxml-ui负责封装所有框架无关的公共交互组件，包含：
+通用UI元素：功能区（Ribbon）、弹窗、菜单、标题栏、状态栏
+全品类编辑器组件：分别提供PowerPoint、Word、Excel、Visio、OpenTeams的编辑器组件，以ooxml-ui/<product>的子路径对外暴露，同时还承载了图表、SmartArt这类特殊编辑元素的实现
+框架适配工具套件：内置ooxml-ui/bindings这个框架中立的绑定工具包，所有针对不同前端框架的薄绑定都基于这套工具开发
+PowerPoint 使用说明：https://github.com/ChristopherVR/ooxml/blob/master/viewers/pptx/README.md
+Word 使用说明：https://github.com/ChristopherVR/ooxml/blob/master/viewers/docx/README.md
+Excel 使用说明：https://github.com/ChristopherVR/ooxml/blob/master/viewers/xlsx/README.md
+Visio 使用说明：https://github.com/ChristopherVR/ooxml/blob/master/viewers/visio/README.md
+## 2. 组件规范
+- &zwnj;**命名**&zwnj;: 组件文件名使用 PascalCase (e.g., `UserProfile.vue`)。
+- &zwnj;**结构**&zwnj;: 
+  - 模板中禁止写复杂逻辑，复杂计算请使用 `computed`。
+  - 副作用处理请使用 `watch` 或 `onMounted`。
+- &zwnj;**Props & Emits**&zwnj;: 必须使用 `defineProps` 和 `defineEmits` 进行类型定义，禁止使用对象语法。
+
+## 3. 状态管理与 API 调用
+- &zwnj;**API 请求**&zwnj;: 封装统一的 Axios 实例，拦截器中处理 Token 注入和全局错误提示。
+- &zwnj;**Pinia Store**&zwnj;: 
+  - Store 按功能模块拆分。
+  - 避免在组件中直接修改 Store 状态，应通过 Actions 更新。
+- &zwnj;**数据判空**&zwnj;: 访问后端返回的数据前，必须进行可选链操作 (`?.`) 或判空检查，防止白屏。
+
+## 4. 样式规范
+- 使用 Scoped CSS 或 CSS Modules 避免样式污染。
+- 优先使用 TailwindCSS 实用类。
+
+## 5. 示例
+```typescript
+<script setup lang="ts">
+import { ref, onMounted } from 'vue'
+import { getUserProfile } from '@/api/user'
+
+interface User {
+  id: number
+  name: string
+}
+
+const user = ref<User | null>(null)
+
+onMounted(async () => {
+  const res = await getUserProfile()
+  if (res.code === 200) {
+    user.value = res.data
+  }
+})
+</script>
+
+<template>
+  <div v-if="user" class="p-4">
+    {{ user.name }}
+  </div>
+</template>

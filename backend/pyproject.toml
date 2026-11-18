@@ -1,0 +1,19 @@
+[project]
+name = "online-documents-backend"
+version = "0.1.0"
+description = "在线文档管理系统 FastAPI 后端"
+requires-python = ">=3.12"
+readme = "../docs/README.md"
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "UP"]

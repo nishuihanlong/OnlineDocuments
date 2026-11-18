@@ -1,0 +1,37 @@
+# 在线文档管理系统 - 后端依赖
+# 安装: pip install -r requirements.txt
+fastapi>=0.115.0,<1.0.0
+uvicorn[standard]>=0.34.0,<1.0.0
+pydantic>=2.10.0,<3.0.0
+pydantic-settings>=2.7.0,<3.0.0
+# 达梦官方方言 dmSQLAlchemy 的原生异步扩展
+# 要求 SQLAlchemy > 2.0.22，而 2.1.x 又移除了该扩展依赖的旧符号导致无法导入，
+# 因此 2.0.x 最新版（2.0.23~2.0.x）是唯一同时兼容同步与异步方言的区间。
+SQLAlchemy>=2.0.36,<2.1
+aiosqlite>=0.20.0,<1.0.0
+
+# 达梦 8 生产数据库：官方 SQLAlchemy 方言，pip install dmSQLAlchemy
+# 两种接入方式（连接串前缀不同）：
+#   1) 原生异步：dm+dmAsync://<user>:<password>@<host>:<port>/<schema>
+#      —— 需额外安装 dmAsync 异步驱动，业务层直接拿到真正的 AsyncSession，无需线程池。
+#   2) 同步驱动：dm+dmPython://<user>:<password>@<host>:<port>/<schema>
+#      —— 仅依赖 dmPython，经 src/db/session.py 的线程池门面适配为异步会话。
+dmSQLAlchemy>=2.0.17
+dmAsync>=1.0.0
+async_timeout>=5.0.0
+greenlet>=3.1.0,<4.0.0
+alembic>=1.14.0,<2.0.0
+PyJWT>=2.10.0,<3.0.0
+bcrypt>=4.2.0,<5.0.0
+python-multipart>=0.0.20,<1.0.0
+
+# 基础设施（未配置对应 URL/凭据时自动降级为本地实现）
+redis>=5.2.0,<7.0.0
+aio-pika>=9.5.0,<10.0.0
+boto3>=1.35.0,<2.0.0
+httpx>=0.28.0,<1.0.0
+psutil>=6.0.0,<8.0.0
+
+# 测试
+pytest>=8.3.0,<10.0.0
+pytest-asyncio>=0.24.0,<2.0.0
