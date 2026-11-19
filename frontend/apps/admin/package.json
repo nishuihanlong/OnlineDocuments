@@ -25,7 +25,7 @@
     "echarts": "^6.1.0",
     "element-plus": "catalog:",
     "nprogress": "^0.2.0",
-    "ooxml-core": "^1.54.0",
+    "ooxml-core": "^1.54.1",
     "pinia": "^4.0.2",
     "pinia-plugin-persistedstate": "^4.7.1",
     "pptx-vue-viewer": "^4.80.0",

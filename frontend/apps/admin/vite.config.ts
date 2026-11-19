@@ -45,7 +45,11 @@ export default ({ mode }: ConfigEnv): UserConfig => {
       ]
     },
     build: {
-      target: 'es2015',
+      // ooxml-core 使用 BigInt（8n），需 es2020+ 目标，否则大整数字面量会被降级处理
+      target: 'es2020',
+      // Vite 8 默认用 lightningcss 压缩 CSS，对含 @layer 注释的样式会误判为空选择器，
+      // 改用 esbuild 压缩以兼容（与 ooxml 等依赖无关）。
+      cssMinify: 'esbuild',
       outDir: env.VITE_OUT_DIR || 'dist',
       sourcemap: env.VITE_SOURCEMAP === 'true',
       cssCodeSplit: !(env.VITE_USE_CSS_SPLIT === 'false'),
